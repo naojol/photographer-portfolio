@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="静寂と優雅さを追求する写真家のポートフォリオ。モノクロームの世界で、光と影が織りなす物語をお届けします。">
+    <title>Silence in Frame | 写真家ポートフォリオ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Noto+Sans+JP:wght@200;300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- ナビゲーション -->
+    <nav class="navigation" id="navigation">
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <span class="logo-text">Silence in Frame</span>
+            </a>
+            <button class="nav-toggle" id="nav-toggle" aria-label="メニューを開く">
+                <span class="nav-toggle-line"></span>
+                <span class="nav-toggle-line"></span>
+            </button>
+            <ul class="nav-menu" id="nav-menu">
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#gallery" class="nav-link">Gallery</a></li>
+                <li><a href="#instagram" class="nav-link">Instagram</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- ヒーローセクション -->
+    <header class="hero" id="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <p class="hero-tagline">静寂の中に、物語を見つける</p>
+            <h1 class="hero-title">Silence in Frame</h1>
+            <div class="hero-divider"></div>
+            <p class="hero-subtitle">Photography Portfolio</p>
+        </div>
+        <div class="hero-scroll">
+            <span>Scroll</span>
+            <div class="scroll-line"></div>
+        </div>
+    </header>
+
+    <!-- 写真家紹介セクション -->
+    <section class="about" id="about">
+        <div class="section-container">
+            <div class="about-grid">
+                <div class="about-image-wrapper">
+                    <div class="ink-frame">
+                        <img src="images/photographer.jpg" alt="写真家のポートレート" class="about-image" id="about-image">
+                    </div>
+                </div>
+                <div class="about-content">
+                    <span class="section-label">About</span>
+                    <h2 class="section-title">静寂を紡ぐ</h2>
+                    <div class="ink-divider"></div>
+                    <p class="about-text">
+                        光と影の間に存在する、言葉にならない瞬間を追い求めています。
+                        モノクロームの世界は、余計なものを削ぎ落とし、
+                        被写体の本質だけを浮かび上がらせてくれます。
+                    </p>
+                    <p class="about-text">
+                        静寂の中に潜む美しさ、そして時間が止まったかのような
+                        永遠の一瞬を、私のレンズを通して皆様にお届けします。
+                    </p>
+                    <div class="about-signature">
+                        <span class="signature-name">Yuki Tanaka</span>
+                        <span class="signature-title">Photographer</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="ink-splash ink-splash-1"></div>
+    </section>
+
+    <!-- ギャラリーセクション -->
+    <section class="gallery" id="gallery">
+        <div class="section-container">
+            <div class="section-header">
+                <span class="section-label">Gallery</span>
+                <h2 class="section-title">作品集</h2>
+                <div class="ink-divider center"></div>
+            </div>
+            <div class="gallery-grid" id="gallery-grid">
+                <!-- ギャラリーアイテムはJavaScriptで動的に生成 -->
+            </div>
+        </div>
+        <div class="ink-splash ink-splash-2"></div>
+    </section>
+
+    <!-- ギャラリーモーダル -->
+    <div class="modal" id="gallery-modal">
+        <button class="modal-close" id="modal-close" aria-label="閉じる">
+            <span></span>
+            <span></span>
+        </button>
+        <div class="modal-content">
+            <img src="" alt="" class="modal-image" id="modal-image">
+            <div class="modal-info">
+                <h3 class="modal-title" id="modal-title"></h3>
+                <p class="modal-description" id="modal-description"></p>
+            </div>
+        </div>
+        <button class="modal-nav modal-prev" id="modal-prev" aria-label="前へ">
+            <span></span>
+        </button>
+        <button class="modal-nav modal-next" id="modal-next" aria-label="次へ">
+            <span></span>
+        </button>
+    </div>
+
+    <!-- Instagramセクション -->
+    <section class="instagram" id="instagram">
+        <div class="section-container">
+            <div class="section-header">
+                <span class="section-label">Instagram</span>
+                <h2 class="section-title">最新の投稿</h2>
+                <div class="ink-divider center"></div>
+                <p class="section-description">Instagramで日々の作品を公開しています</p>
+            </div>
+            <div class="instagram-grid" id="instagram-grid">
+                <!-- Instagram投稿はJavaScriptで動的に生成 -->
+                <div class="instagram-loading" id="instagram-loading">
+                    <div class="loading-spinner"></div>
+                    <p>読み込み中...</p>
+                </div>
+            </div>
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="instagram-link" id="instagram-link">
+                <span>@photographername</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M7 17L17 7M17 7H7M17 7V17"/>
+                </svg>
+            </a>
+        </div>
+        <div class="ink-splash ink-splash-3"></div>
+    </section>
+
+    <!-- コンタクトセクション -->
+    <section class="contact" id="contact">
+        <div class="section-container">
+            <div class="section-header">
+                <span class="section-label">Contact</span>
+                <h2 class="section-title">お問い合わせ</h2>
+                <div class="ink-divider center"></div>
+            </div>
+            <div class="contact-content">
+                <p class="contact-text">
+                    撮影のご依頼、作品に関するお問い合わせは<br>
+                    下記メールアドレスまでご連絡ください。
+                </p>
+                <a href="mailto:contact@example.com" class="contact-email">
+                    contact@example.com
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- フッター -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-logo">Silence in Frame</div>
+            <p class="footer-copyright">© 2026 All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
