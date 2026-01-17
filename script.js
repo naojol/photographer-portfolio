@@ -15,51 +15,43 @@ const CONFIG = {
         userId: '',      // ここにInstagram User IDを設定
         postCount: 8     // 表示する投稿数
     },
-    
+
     // ギャラリー設定
     gallery: [
         {
             id: 1,
-            src: 'images/gallery-1.jpg',
-            title: '静寂の森',
-            category: 'Nature',
-            description: '朝霧に包まれた森の静けさ'
+            src: 'images/gallery-1.png',
+            title: '境界',
+            category: 'Shrine',
+            description: '朝霧に佇む鳥居、現世と神域の狭間'
         },
         {
             id: 2,
-            src: 'images/gallery-2.jpg',
-            title: '影の詩',
-            category: 'Abstract',
-            description: '光と影が織りなす抽象的な美'
+            src: 'images/gallery-2.png',
+            title: '静寂の刻',
+            category: 'Temple',
+            description: '雪に覆われた寺院、時が止まったかのような静けさ'
         },
         {
             id: 3,
-            src: 'images/gallery-3.jpg',
-            title: '孤独な旅人',
-            category: 'Portrait',
-            description: '一人佇む人物の後ろ姿'
+            src: 'images/gallery-3.png',
+            title: '結界',
+            category: 'Sacred',
+            description: '注連縄と紙垂、神聖な空間を守る結界'
         },
         {
             id: 4,
-            src: 'images/gallery-4.jpg',
-            title: '水面の記憶',
-            category: 'Nature',
-            description: '穏やかな湖面に映る風景',
-            wide: true
+            src: 'images/gallery-4.png',
+            title: '参道',
+            category: 'Shrine',
+            description: '石灯籠が導く祈りの道'
         },
         {
             id: 5,
-            src: 'images/gallery-5.jpg',
-            title: '都市の呼吸',
-            category: 'Urban',
-            description: '夜明け前の街並み'
-        },
-        {
-            id: 6,
-            src: 'images/gallery-6.jpg',
-            title: '時の流れ',
-            category: 'Architecture',
-            description: '歴史を刻んだ建築物'
+            src: 'images/gallery-5.png',
+            title: '木漏れ日',
+            category: 'Shrine',
+            description: '光が差し込む鳥居、自然と神域の調和'
         }
     ]
 };
@@ -111,37 +103,37 @@ document.addEventListener('DOMContentLoaded', () => {
 function initNavigation() {
     // スクロール時のナビゲーション変更
     let lastScrollY = 0;
-    
+
     window.addEventListener('scroll', () => {
         const scrollY = window.scrollY;
-        
+
         if (scrollY > 100) {
             elements.navigation.classList.add('scrolled');
         } else {
             elements.navigation.classList.remove('scrolled');
         }
-        
+
         lastScrollY = scrollY;
     });
-    
+
     // モバイルメニュートグル
     elements.navToggle.addEventListener('click', () => {
         elements.navToggle.classList.toggle('active');
         elements.navMenu.classList.toggle('active');
         document.body.style.overflow = elements.navMenu.classList.contains('active') ? 'hidden' : '';
     });
-    
+
     // ナビゲーションリンククリック
     document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
             const target = document.querySelector(link.getAttribute('href'));
-            
+
             // モバイルメニューを閉じる
             elements.navToggle.classList.remove('active');
             elements.navMenu.classList.remove('active');
             document.body.style.overflow = '';
-            
+
             // スムーズスクロール
             if (target) {
                 const offsetTop = target.offsetTop - 80;
@@ -172,7 +164,7 @@ function renderGallery() {
             </div>
         </div>
     `).join('');
-    
+
     // ギャラリーアイテムにクリックイベントを追加
     document.querySelectorAll('.gallery-item').forEach(item => {
         item.addEventListener('click', () => {
@@ -189,18 +181,18 @@ function initModal() {
     elements.modalClose.addEventListener('click', closeModal);
     elements.modalPrev.addEventListener('click', () => navigateModal(-1));
     elements.modalNext.addEventListener('click', () => navigateModal(1));
-    
+
     // モーダル背景クリックで閉じる
     elements.modal.addEventListener('click', (e) => {
         if (e.target === elements.modal) {
             closeModal();
         }
     });
-    
+
     // キーボード操作
     document.addEventListener('keydown', (e) => {
         if (!state.isModalOpen) return;
-        
+
         switch (e.key) {
             case 'Escape':
                 closeModal();
@@ -231,7 +223,7 @@ function closeModal() {
 
 function navigateModal(direction) {
     const newIndex = state.currentGalleryIndex + direction;
-    
+
     if (newIndex >= 0 && newIndex < CONFIG.gallery.length) {
         state.currentGalleryIndex = newIndex;
         updateModalContent();
@@ -244,7 +236,7 @@ function updateModalContent() {
     elements.modalImage.alt = item.title;
     elements.modalTitle.textContent = item.title;
     elements.modalDescription.textContent = item.description;
-    
+
     // ナビゲーションボタンの表示/非表示
     elements.modalPrev.style.display = state.currentGalleryIndex === 0 ? 'none' : 'block';
     elements.modalNext.style.display = state.currentGalleryIndex === CONFIG.gallery.length - 1 ? 'none' : 'block';
@@ -266,11 +258,11 @@ async function fetchInstagramPosts() {
         const response = await fetch(
             `https://graph.instagram.com/${CONFIG.instagram.userId}/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink&limit=${CONFIG.instagram.postCount}&access_token=${CONFIG.instagram.accessToken}`
         );
-        
+
         if (!response.ok) {
             throw new Error('Instagram API エラー');
         }
-        
+
         const data = await response.json();
         renderInstagramPosts(data.data);
     } catch (error) {
@@ -281,7 +273,7 @@ async function fetchInstagramPosts() {
 
 function renderInstagramPosts(posts) {
     elements.instagramLoading.style.display = 'none';
-    
+
     elements.instagramGrid.innerHTML = posts.map(post => {
         const imageUrl = post.media_type === 'VIDEO' ? post.thumbnail_url : post.media_url;
         return `
@@ -297,21 +289,21 @@ function renderInstagramPosts(posts) {
             </a>
         `;
     }).join('');
-    
+
     // アニメーションを適用
     observeElements(document.querySelectorAll('.instagram-item'));
 }
 
 function showInstagramSetupMessage() {
     elements.instagramLoading.style.display = 'none';
-    
+
     elements.instagramGrid.innerHTML = `
         <div class="instagram-setup">
             <p>Instagram連携を有効にするには、<code>script.js</code>のCONFIG設定を更新してください。</p>
             <p>詳細は<a href="https://developers.facebook.com/docs/instagram-basic-display-api/" target="_blank" rel="noopener">Meta Developer Docs</a>をご確認ください。</p>
         </div>
     `;
-    
+
     // プレースホルダー画像を表示（デモ用）
     showInstagramPlaceholders();
 }
@@ -330,9 +322,9 @@ function showInstagramPlaceholders() {
             </div>
         </div>
     `).join('');
-    
+
     elements.instagramGrid.innerHTML = placeholders;
-    
+
     // アニメーションを適用
     observeElements(document.querySelectorAll('.instagram-item'));
 }
@@ -350,12 +342,12 @@ function showInstagramError() {
 function initScrollAnimations() {
     const fadeElements = document.querySelectorAll('.fade-in');
     observeElements(fadeElements);
-    
+
     // セクションにfade-inクラスを追加
     document.querySelectorAll('.section-header, .about-content, .ink-frame, .contact-content').forEach(el => {
         el.classList.add('fade-in');
     });
-    
+
     observeElements(document.querySelectorAll('.fade-in'));
 }
 
@@ -371,7 +363,7 @@ function observeElements(elements) {
         threshold: 0.1,
         rootMargin: '0px 0px -50px 0px'
     });
-    
+
     elements.forEach(el => observer.observe(el));
 }
 
@@ -381,7 +373,7 @@ function observeElements(elements) {
 function initPlaceholderImages() {
     // About画像のプレースホルダー
     createPlaceholderImage(elements.aboutImage, 600, 800, 'Photographer');
-    
+
     // ギャラリー画像のプレースホルダー
     document.querySelectorAll('.gallery-item img').forEach((img, i) => {
         const item = CONFIG.gallery[i];
@@ -389,7 +381,7 @@ function initPlaceholderImages() {
         const height = item.tall ? 800 : 400;
         createPlaceholderImage(img, width, height, item.title);
     });
-    
+
     // Instagram画像のプレースホルダー
     document.querySelectorAll('.instagram-item img').forEach((img, i) => {
         createPlaceholderImage(img, 400, 400, `IG ${i + 1}`);
@@ -401,12 +393,12 @@ function createPlaceholderImage(imgElement, width, height, text) {
     if (imgElement.complete && imgElement.naturalWidth > 0) {
         return;
     }
-    
+
     const canvas = document.createElement('canvas');
     canvas.width = width;
     canvas.height = height;
     const ctx = canvas.getContext('2d');
-    
+
     // グラデーション背景
     const gradient = ctx.createLinearGradient(0, 0, width, height);
     gradient.addColorStop(0, '#e8e8e8');
@@ -414,7 +406,7 @@ function createPlaceholderImage(imgElement, width, height, text) {
     gradient.addColorStop(1, '#c0c0c0');
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, width, height);
-    
+
     // 水墨画風のパターン
     ctx.globalAlpha = 0.1;
     for (let i = 0; i < 5; i++) {
@@ -429,7 +421,7 @@ function createPlaceholderImage(imgElement, width, height, text) {
         ctx.arc(x, y, radius, 0, Math.PI * 2);
         ctx.fill();
     }
-    
+
     // テキスト
     ctx.globalAlpha = 0.3;
     ctx.fillStyle = '#333';
@@ -437,7 +429,7 @@ function createPlaceholderImage(imgElement, width, height, text) {
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(text, width / 2, height / 2);
-    
+
     imgElement.src = canvas.toDataURL();
 }
 
