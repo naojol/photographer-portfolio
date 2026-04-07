@@ -16,7 +16,7 @@ const CONFIG = {
         postCount: 8     // 表示する投稿数
     },
 
-    // ギャラリー設定
+    // ギャラリー設定（サーバーAPIから読み込まれるため、フォールバック用）
     gallery: [
         {
             id: 1,
@@ -149,7 +149,20 @@ function initNavigation() {
 // ============================================
 // ギャラリー
 // ============================================
-function initGallery() {
+async function initGallery() {
+    // サーバーAPIから写真を読み込み（失敗時はCONFIGのフォールバックを使用）
+    try {
+        const res = await fetch('/api/photos');
+        if (res.ok) {
+            const photos = await res.json();
+            if (photos.length > 0) {
+                CONFIG.gallery = photos;
+            }
+        }
+    } catch (e) {
+        // APIが利用できない場合（静的ファイルとして開いた場合など）はフォールバックを使用
+        console.log('APIサーバーに接続できません。デフォルトのギャラリーを表示します。');
+    }
     renderGallery();
 }
 
