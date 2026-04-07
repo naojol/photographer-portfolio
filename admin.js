@@ -85,6 +85,13 @@ async function initAuth() {
         return;
     }
 
+    // パスワードリカバリーイベントを検知
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+        if (event === 'PASSWORD_RECOVERY') {
+            showPasswordReset();
+        }
+    });
+
     const { data: { session } } = await supabaseClient.auth.getSession();
     if (session) {
         showApp();
@@ -92,6 +99,37 @@ async function initAuth() {
         showLogin();
     }
 }
+
+function showPasswordReset() {
+    els.loginForm.style.display = 'none';
+    document.getElementById('reset-password-form').style.display = 'block';
+    document.querySelector('.login-subtitle').textContent = 'パスワード再設定';
+}
+
+// パスワード再設定フォーム
+document.getElementById('reset-password-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const newPass = document.getElementById('reset-new-password').value;
+    const confirmPass = document.getElementById('reset-confirm-password').value;
+    const resetError = document.getElementById('reset-error');
+
+    resetError.style.display = 'none';
+
+    if (newPass !== confirmPass) {
+        resetError.textContent = 'パスワードが一致しません。';
+        resetError.style.display = 'block';
+        return;
+    }
+
+    const { error } = await supabaseClient.auth.updateUser({ password: newPass });
+    if (error) {
+        resetError.textContent = 'パスワード設定に失敗しました: ' + error.message;
+        resetError.style.display = 'block';
+    } else {
+        showToast('パスワードを設定しました', 'success');
+        showApp();
+    }
+});
 
 els.loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();

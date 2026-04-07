@@ -36,6 +36,25 @@
                     </span>
                 </button>
             </form>
+            <!-- パスワード再設定フォーム -->
+            <form class="login-form" id="reset-password-form" style="display:none">
+                <p class="reset-info">新しいパスワードを設定してください</p>
+                <div class="login-field">
+                    <input type="password" id="reset-new-password" placeholder="新しいパスワード（6文字以上）" required
+                        minlength="6" autocomplete="new-password">
+                </div>
+                <div class="login-field">
+                    <input type="password" id="reset-confirm-password" placeholder="パスワード確認" required
+                        minlength="6" autocomplete="new-password">
+                </div>
+                <p class="login-error" id="reset-error"></p>
+                <button type="submit" class="login-button" id="reset-button">
+                    <span class="login-button-text">パスワードを設定</span>
+                    <span class="login-button-loading" style="display:none">
+                        <span class="spinner"></span>
+                    </span>
+                </button>
+            </form>
         </div>
     </div>
 
