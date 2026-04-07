@@ -1,5 +1,5 @@
 /* ============================================
-   Silence in Frame - 管理画面スタイル
+   Silence in Frame - 管理画面スタイル (Supabase版)
    ============================================ */
 
 :root {
@@ -15,19 +15,15 @@
     --ink-soft: rgba(0, 0, 0, 0.06);
     --ink-medium: rgba(0, 0, 0, 0.12);
     --ink-dark: rgba(0, 0, 0, 0.25);
+    --color-danger: #c0392b;
+    --color-danger-bg: #fdf0ef;
     --font-display: 'Cormorant Garamond', serif;
     --font-body: 'Noto Sans JP', sans-serif;
     --transition-fast: 0.2s ease;
     --transition-normal: 0.4s ease;
 }
 
-*,
-*::before,
-*::after {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
     font-family: var(--font-body);
@@ -38,7 +34,109 @@ body {
     min-height: 100vh;
 }
 
-/* ヘッダー */
+/* ============================================
+   ログイン画面
+   ============================================ */
+.login-screen {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    background: var(--color-white);
+}
+
+.login-overlay {
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(ellipse at 20% 30%, var(--ink-soft) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 70%, var(--ink-light) 0%, transparent 40%),
+        radial-gradient(ellipse at 50% 50%, transparent 0%, var(--ink-light) 100%);
+    pointer-events: none;
+}
+
+.login-container {
+    position: relative;
+    text-align: center;
+    padding: 3rem;
+    max-width: 380px;
+    width: 90%;
+}
+
+.login-logo {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 300;
+    letter-spacing: 0.15em;
+    color: var(--color-black);
+    margin-bottom: 0.5rem;
+}
+
+.login-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-medium-gray);
+    margin-bottom: 2.5rem;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.login-field input {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border: 1px solid var(--color-gray);
+    background: var(--color-white);
+    font-family: var(--font-body);
+    font-size: 0.9375rem;
+    color: var(--color-charcoal);
+    outline: none;
+    border-radius: 2px;
+    transition: var(--transition-fast);
+}
+
+.login-field input:focus {
+    border-color: var(--color-black);
+}
+
+.login-error {
+    display: none;
+    font-size: 0.8125rem;
+    color: var(--color-danger);
+    text-align: left;
+}
+
+.login-button {
+    padding: 0.875rem;
+    background: var(--color-black);
+    color: var(--color-white);
+    border: none;
+    font-family: var(--font-body);
+    font-size: 0.9375rem;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    margin-top: 0.5rem;
+}
+
+.login-button:hover:not(:disabled) { background: var(--color-charcoal); }
+.login-button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.login-button-loading {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* ============================================
+   ヘッダー
+   ============================================ */
 .admin-header {
     background: var(--color-white);
     border-bottom: 1px solid var(--color-gray);
@@ -80,18 +178,38 @@ body {
     border-radius: 2px;
 }
 
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
 .header-link {
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     color: var(--color-dark-gray);
     text-decoration: none;
     transition: var(--transition-fast);
 }
+.header-link:hover { color: var(--color-black); }
 
-.header-link:hover {
+.logout-button {
+    font-family: var(--font-body);
+    font-size: 0.8125rem;
+    padding: 0.4rem 1rem;
+    border: 1px solid var(--color-gray);
+    background: none;
+    color: var(--color-dark-gray);
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+.logout-button:hover {
+    border-color: var(--color-charcoal);
     color: var(--color-black);
 }
 
-/* メイン */
+/* ============================================
+   メイン
+   ============================================ */
 .admin-main {
     max-width: 1200px;
     margin: 0 auto;
@@ -106,12 +224,14 @@ body {
     margin-bottom: 1.5rem;
 }
 
-/* アップロードセクション */
+/* ============================================
+   アップロードセクション
+   ============================================ */
 .upload-section {
     background: var(--color-white);
     border: 1px solid var(--color-gray);
     padding: 2.5rem;
-    margin-bottom: 3rem;
+    margin-bottom: 2rem;
 }
 
 .upload-dropzone {
@@ -121,13 +241,11 @@ body {
     text-align: center;
     transition: var(--transition-normal);
     cursor: pointer;
-    position: relative;
-    min-height: 200px;
+    min-height: 180px;
     display: flex;
     align-items: center;
     justify-content: center;
 }
-
 .upload-dropzone.dragover {
     border-color: var(--color-black);
     background: var(--ink-light);
@@ -147,15 +265,8 @@ body {
     margin-bottom: 0.5rem;
 }
 
-.dropzone-text {
-    font-size: 1rem;
-    color: var(--color-charcoal);
-}
-
-.dropzone-subtext {
-    font-size: 0.8125rem;
-    color: var(--color-medium-gray);
-}
+.dropzone-text { font-size: 1rem; color: var(--color-charcoal); }
+.dropzone-subtext { font-size: 0.8125rem; color: var(--color-medium-gray); }
 
 .dropzone-button {
     display: inline-block;
@@ -167,42 +278,70 @@ body {
     transition: var(--transition-fast);
     font-family: var(--font-body);
 }
+.dropzone-button:hover { background: var(--color-black); color: var(--color-white); }
 
-.dropzone-button:hover {
-    background: var(--color-black);
-    color: var(--color-white);
+.dropzone-hint { font-size: 0.75rem; color: var(--color-medium-gray); }
+
+/* ============================================
+   一括プレビュー
+   ============================================ */
+.batch-preview {
+    margin-top: 1.5rem;
 }
 
-.dropzone-hint {
-    font-size: 0.75rem;
-    color: var(--color-medium-gray);
+.batch-preview-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+    color: var(--color-dark-gray);
 }
 
-/* プレビュー */
-.dropzone-preview {
+.batch-clear {
+    font-family: var(--font-body);
+    font-size: 0.8125rem;
+    padding: 0.25rem 0.75rem;
+    border: 1px solid var(--color-gray);
+    background: none;
+    color: var(--color-dark-gray);
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+.batch-clear:hover { border-color: var(--color-danger); color: var(--color-danger); }
+
+.batch-preview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 0.75rem;
+}
+
+.batch-item {
     position: relative;
-    max-width: 400px;
-    max-height: 300px;
+    aspect-ratio: 1;
+    overflow: hidden;
+    border: 1px solid var(--color-gray);
+    border-radius: 2px;
 }
 
-.dropzone-preview img {
-    max-width: 100%;
-    max-height: 300px;
-    object-fit: contain;
+.batch-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
     filter: grayscale(100%);
 }
 
-.preview-remove {
+.batch-item-remove {
     position: absolute;
-    top: -12px;
-    right: -12px;
-    width: 28px;
-    height: 28px;
+    top: 4px;
+    right: 4px;
+    width: 22px;
+    height: 22px;
     border-radius: 50%;
-    background: var(--color-black);
-    color: var(--color-white);
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
     border: none;
-    font-size: 1.25rem;
+    font-size: 1rem;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -210,7 +349,23 @@ body {
     line-height: 1;
 }
 
-/* フォームフィールド */
+.batch-item-name {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 0.25rem;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    font-size: 0.625rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ============================================
+   フォームフィールド
+   ============================================ */
 .form-fields {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -223,10 +378,7 @@ body {
     flex-direction: column;
     gap: 0.5rem;
 }
-
-.form-group.full-width {
-    grid-column: 1 / -1;
-}
+.form-group.full-width { grid-column: 1 / -1; }
 
 .form-group label {
     font-size: 0.8125rem;
@@ -247,18 +399,43 @@ body {
     outline: none;
     border-radius: 2px;
 }
-
 .form-group input:focus,
 .form-group select:focus,
-.form-group textarea:focus {
-    border-color: var(--color-black);
+.form-group textarea:focus { border-color: var(--color-black); }
+.form-group textarea { resize: vertical; }
+
+/* ============================================
+   プログレスバー
+   ============================================ */
+.upload-progress {
+    margin-top: 1.5rem;
 }
 
-.form-group textarea {
-    resize: vertical;
+.progress-bar {
+    width: 100%;
+    height: 4px;
+    background: var(--color-gray);
+    border-radius: 2px;
+    overflow: hidden;
 }
 
-/* 送信ボタン */
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--color-black);
+    transition: width 0.3s ease;
+}
+
+.progress-text {
+    font-size: 0.8125rem;
+    color: var(--color-dark-gray);
+    margin-top: 0.5rem;
+    text-align: center;
+}
+
+/* ============================================
+   送信ボタン
+   ============================================ */
 .submit-button {
     display: block;
     width: 100%;
@@ -274,45 +451,46 @@ body {
     cursor: pointer;
     transition: var(--transition-fast);
 }
+.submit-button:hover:not(:disabled) { background: var(--color-charcoal); }
+.submit-button:disabled { opacity: 0.4; cursor: not-allowed; }
 
-.submit-button:hover:not(:disabled) {
-    background: var(--color-charcoal);
-}
-
-.submit-button:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-}
-
-.submit-loading {
-    display: inline-flex;
+/* ============================================
+   移行バナー
+   ============================================ */
+.migrate-banner {
+    display: flex;
     align-items: center;
-    gap: 0.5rem;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.25rem 2rem;
+    background: var(--color-white);
+    border: 1px dashed var(--ink-medium);
+    margin-bottom: 2rem;
+    font-size: 0.875rem;
+    color: var(--color-dark-gray);
 }
 
-/* スピナー */
-.spinner {
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-top-color: var(--color-white);
-    border-radius: 50%;
-    animation: spin 0.6s linear infinite;
+.migrate-button {
+    flex-shrink: 0;
+    font-family: var(--font-body);
+    font-size: 0.8125rem;
+    padding: 0.5rem 1.25rem;
+    border: 1px solid var(--color-black);
+    background: none;
+    color: var(--color-black);
+    cursor: pointer;
+    transition: var(--transition-fast);
+    white-space: nowrap;
 }
+.migrate-button:hover:not(:disabled) { background: var(--color-black); color: var(--color-white); }
+.migrate-button:disabled { opacity: 0.5; cursor: not-allowed; }
 
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
-}
+/* ============================================
+   写真一覧
+   ============================================ */
+.photos-section { margin-top: 1rem; }
 
-/* 写真一覧セクション */
-.photos-section {
-    margin-top: 1rem;
-}
-
-.photos-section .section-header {
+.section-header-row {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
@@ -332,33 +510,48 @@ body {
 
 .photos-loading {
     grid-column: 1 / -1;
-    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     padding: 4rem;
     color: var(--color-medium-gray);
 }
 
-.photos-loading .spinner {
-    border-color: var(--color-gray);
-    border-top-color: var(--color-black);
-    width: 24px;
-    height: 24px;
-    margin-bottom: 1rem;
-}
-
-/* 写真カード */
+/* ============================================
+   写真カード
+   ============================================ */
 .photo-card {
+    position: relative;
     background: var(--color-white);
     border: 1px solid var(--color-gray);
     overflow: hidden;
     transition: var(--transition-fast);
 }
+.photo-card:hover { border-color: var(--color-medium-gray); }
+.photo-card.dragging { opacity: 0.4; }
+.photo-card.drag-over { border-color: var(--color-black); box-shadow: 0 0 0 2px var(--ink-medium); }
 
-.photo-card:hover {
-    border-color: var(--color-medium-gray);
+.photo-card-drag-handle {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.5rem;
+    z-index: 5;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    border-radius: 4px;
+    cursor: grab;
+    opacity: 0;
+    transition: var(--transition-fast);
 }
+.photo-card:hover .photo-card-drag-handle { opacity: 1; }
 
 .photo-card-image {
-    position: relative;
     aspect-ratio: 4/3;
     overflow: hidden;
     background: var(--color-light-gray);
@@ -371,26 +564,9 @@ body {
     filter: grayscale(100%);
     transition: var(--transition-normal);
 }
+.photo-card:hover .photo-card-image img { transform: scale(1.03); }
 
-.photo-card:hover .photo-card-image img {
-    transform: scale(1.03);
-}
-
-.badge-default {
-    position: absolute;
-    top: 0.75rem;
-    left: 0.75rem;
-    font-size: 0.625rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    padding: 0.2rem 0.5rem;
-    background: rgba(0, 0, 0, 0.7);
-    color: var(--color-white);
-}
-
-.photo-card-info {
-    padding: 1.25rem;
-}
+.photo-card-info { padding: 1.25rem; }
 
 .photo-card-title {
     font-family: var(--font-display);
@@ -428,66 +604,81 @@ body {
     font-size: 0.8125rem;
     cursor: pointer;
     transition: var(--transition-fast);
+    border-right: 1px solid var(--color-gray);
+}
+.photo-card-actions button:last-child { border-right: none; }
+
+.btn-edit { color: var(--color-charcoal); }
+.btn-edit:hover { background: var(--color-light-gray); }
+
+.btn-delete { color: var(--color-danger); }
+.btn-delete:hover { background: var(--color-danger-bg); }
+
+.btn-reorder {
+    color: var(--color-medium-gray);
+    max-width: 48px;
+}
+.btn-reorder:hover { background: var(--color-light-gray); color: var(--color-black); }
+
+/* PC: ドラッグハンドル表示、上下ボタン非表示 */
+@media (min-width: 769px) {
+    .btn-reorder { display: none; }
 }
 
-.btn-edit {
-    color: var(--color-charcoal);
-    border-right: 1px solid var(--color-gray) !important;
+/* モバイル: ドラッグハンドル非表示、上下ボタン表示 */
+@media (max-width: 768px) {
+    .photo-card-drag-handle { display: none; }
+    .photo-card[draggable="true"] { cursor: default; }
 }
 
-.btn-edit:hover {
-    background: var(--color-light-gray);
-}
-
-.btn-delete {
-    color: #c0392b;
-}
-
-.btn-delete:hover {
-    background: #fdf0ef;
-}
-
-/* 編集モーダル */
-.edit-modal {
+/* ============================================
+   モーダル共通
+   ============================================ */
+.modal-overlay {
     position: fixed;
     inset: 0;
     z-index: 1000;
     display: flex;
     align-items: center;
     justify-content: center;
-    opacity: 0;
-    visibility: hidden;
-    transition: var(--transition-normal);
 }
 
-.edit-modal.active {
-    opacity: 1;
-    visibility: visible;
-}
-
-.edit-modal-overlay {
+.modal-backdrop {
     position: absolute;
     inset: 0;
     background: rgba(0, 0, 0, 0.5);
 }
 
-.edit-modal-content {
+.modal-content {
     position: relative;
     background: var(--color-white);
     padding: 2.5rem;
     width: 90%;
     max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
     border: 1px solid var(--color-gray);
 }
 
-.edit-modal-title {
+.modal-title {
     font-family: var(--font-display);
     font-size: 1.25rem;
     font-weight: 400;
     margin-bottom: 1.5rem;
 }
 
-.edit-modal-actions {
+.modal-image-preview {
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+.modal-image-preview img {
+    max-width: 100%;
+    max-height: 200px;
+    object-fit: contain;
+    filter: grayscale(100%);
+}
+
+.modal-actions {
     display: flex;
     gap: 1rem;
     margin-top: 1.5rem;
@@ -503,10 +694,7 @@ body {
     cursor: pointer;
     transition: var(--transition-fast);
 }
-
-.btn-cancel:hover {
-    border-color: var(--color-charcoal);
-}
+.btn-cancel:hover { border-color: var(--color-charcoal); }
 
 .btn-save {
     padding: 0.625rem 1.5rem;
@@ -518,12 +706,52 @@ body {
     cursor: pointer;
     transition: var(--transition-fast);
 }
+.btn-save:hover { background: var(--color-charcoal); }
 
-.btn-save:hover {
-    background: var(--color-charcoal);
+/* 削除確認 */
+.modal-confirm { max-width: 420px; }
+
+.confirm-text {
+    font-size: 0.9375rem;
+    color: var(--color-dark-gray);
+    margin-bottom: 1rem;
 }
 
-/* トースト通知 */
+.confirm-preview {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--color-light-gray);
+    margin-bottom: 1rem;
+}
+.confirm-preview img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    filter: grayscale(100%);
+}
+.confirm-preview span {
+    font-family: var(--font-display);
+    font-size: 1rem;
+}
+
+.btn-danger {
+    padding: 0.625rem 1.5rem;
+    border: none;
+    background: var(--color-danger);
+    color: var(--color-white);
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+.btn-danger:hover { background: #a93226; }
+.btn-danger:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ============================================
+   トースト通知
+   ============================================ */
 .toast-container {
     position: fixed;
     bottom: 2rem;
@@ -544,23 +772,37 @@ body {
     transition: all 0.3s ease;
     max-width: 400px;
 }
+.toast.visible { opacity: 1; transform: translateY(0); }
+.toast-success { background: var(--color-black); }
+.toast-error { background: var(--color-danger); }
 
-.toast.visible {
-    opacity: 1;
-    transform: translateY(0);
+/* ============================================
+   スピナー
+   ============================================ */
+.spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: var(--color-white);
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
 }
 
-.toast-success {
-    background: var(--color-black);
+.photos-loading .spinner {
+    width: 24px;
+    height: 24px;
+    border-color: var(--color-gray);
+    border-top-color: var(--color-black);
+    margin-bottom: 1rem;
 }
 
-.toast-error {
-    background: #c0392b;
-}
+@keyframes spin { to { transform: rotate(360deg); } }
 
-/* 空メッセージ / エラー */
-.empty-message,
-.error-message {
+/* ============================================
+   空・エラーメッセージ
+   ============================================ */
+.empty-message {
     grid-column: 1 / -1;
     text-align: center;
     padding: 4rem 2rem;
@@ -568,37 +810,21 @@ body {
     font-size: 0.9375rem;
 }
 
-/* レスポンシブ */
+/* ============================================
+   レスポンシブ
+   ============================================ */
 @media (max-width: 768px) {
-    .header-container {
-        padding: 0 1.5rem;
-    }
-
-    .admin-main {
-        padding: 2rem 1.5rem;
-    }
-
-    .upload-section {
-        padding: 1.5rem;
-    }
-
-    .form-fields {
-        grid-template-columns: 1fr;
-    }
-
-    .photos-grid {
-        grid-template-columns: 1fr;
-    }
+    .header-container { padding: 0 1.5rem; }
+    .admin-main { padding: 2rem 1.5rem; }
+    .upload-section { padding: 1.5rem; }
+    .form-fields { grid-template-columns: 1fr; }
+    .photos-grid { grid-template-columns: 1fr; }
+    .migrate-banner { flex-direction: column; text-align: center; }
 }
 
 @media (max-width: 480px) {
-    .header-left {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.25rem;
-    }
-
-    .header-link {
-        display: none;
-    }
+    .header-left { flex-direction: column; align-items: flex-start; gap: 0.25rem; }
+    .header-right { gap: 0.75rem; }
+    .header-link { display: none; }
+    .batch-preview-grid { grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); }
 }

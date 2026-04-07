@@ -16,7 +16,7 @@ const CONFIG = {
         postCount: 8     // 表示する投稿数
     },
 
-    // ギャラリー設定（サーバーAPIから読み込まれるため、フォールバック用）
+    // ギャラリー設定（Supabase 未接続時のフォールバック用）
     gallery: [
         {
             id: 1,
@@ -150,18 +150,26 @@ function initNavigation() {
 // ギャラリー
 // ============================================
 async function initGallery() {
-    // サーバーAPIから写真を読み込み（失敗時はCONFIGのフォールバックを使用）
+    // Supabase から写真を読み込み（未設定・失敗時は CONFIG.gallery フォールバック）
     try {
-        const res = await fetch('/api/photos');
-        if (res.ok) {
-            const photos = await res.json();
-            if (photos.length > 0) {
-                CONFIG.gallery = photos;
+        if (typeof isSupabaseConfigured === 'function' && isSupabaseConfigured()) {
+            const { data, error } = await supabaseClient
+                .from('photos')
+                .select('*')
+                .order('sort_order', { ascending: true });
+
+            if (!error && data && data.length > 0) {
+                CONFIG.gallery = data.map(photo => ({
+                    id: photo.id,
+                    src: photo.public_url,
+                    title: photo.title,
+                    category: photo.category,
+                    description: photo.description
+                }));
             }
         }
     } catch (e) {
-        // APIが利用できない場合（静的ファイルとして開いた場合など）はフォールバックを使用
-        console.log('APIサーバーに接続できません。デフォルトのギャラリーを表示します。');
+        // Supabase 未接続時はフォールバックを使用
     }
     renderGallery();
 }
