@@ -17,6 +17,8 @@ const CONFIG = {
     },
 
     // ギャラリー設定
+    // GitHub Pages: ここに写真情報を追加してください
+    // ローカルサーバー: APIから自動読み込みされます
     gallery: [
         {
             id: 1,
@@ -101,7 +103,6 @@ document.addEventListener('DOMContentLoaded', () => {
 // ナビゲーション
 // ============================================
 function initNavigation() {
-    // スクロール時のナビゲーション変更
     let lastScrollY = 0;
 
     window.addEventListener('scroll', () => {
@@ -116,25 +117,21 @@ function initNavigation() {
         lastScrollY = scrollY;
     });
 
-    // モバイルメニュートグル
     elements.navToggle.addEventListener('click', () => {
         elements.navToggle.classList.toggle('active');
         elements.navMenu.classList.toggle('active');
         document.body.style.overflow = elements.navMenu.classList.contains('active') ? 'hidden' : '';
     });
 
-    // ナビゲーションリンククリック
     document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
             const target = document.querySelector(link.getAttribute('href'));
 
-            // モバイルメニューを閉じる
             elements.navToggle.classList.remove('active');
             elements.navMenu.classList.remove('active');
             document.body.style.overflow = '';
 
-            // スムーズスクロール
             if (target) {
                 const offsetTop = target.offsetTop - 80;
                 window.scrollTo({
@@ -149,7 +146,20 @@ function initNavigation() {
 // ============================================
 // ギャラリー
 // ============================================
-function initGallery() {
+async function initGallery() {
+    // ローカルサーバー起動時はAPIから写真を読み込む
+    // GitHub Pages等の静的環境ではCONFIG.galleryを使用
+    try {
+        const res = await fetch('/api/photos');
+        if (res.ok) {
+            const photos = await res.json();
+            if (photos.length > 0) {
+                CONFIG.gallery = photos;
+            }
+        }
+    } catch (e) {
+        // 静的環境ではフォールバック（CONFIG.gallery）を使用
+    }
     renderGallery();
 }
 
@@ -165,7 +175,6 @@ function renderGallery() {
         </div>
     `).join('');
 
-    // ギャラリーアイテムにクリックイベントを追加
     document.querySelectorAll('.gallery-item').forEach(item => {
         item.addEventListener('click', () => {
             const index = parseInt(item.dataset.index);
@@ -182,14 +191,12 @@ function initModal() {
     elements.modalPrev.addEventListener('click', () => navigateModal(-1));
     elements.modalNext.addEventListener('click', () => navigateModal(1));
 
-    // モーダル背景クリックで閉じる
     elements.modal.addEventListener('click', (e) => {
         if (e.target === elements.modal) {
             closeModal();
         }
     });
 
-    // キーボード操作
     document.addEventListener('keydown', (e) => {
         if (!state.isModalOpen) return;
 
@@ -237,7 +244,6 @@ function updateModalContent() {
     elements.modalTitle.textContent = item.title;
     elements.modalDescription.textContent = item.description;
 
-    // ナビゲーションボタンの表示/非表示
     elements.modalPrev.style.display = state.currentGalleryIndex === 0 ? 'none' : 'block';
     elements.modalNext.style.display = state.currentGalleryIndex === CONFIG.gallery.length - 1 ? 'none' : 'block';
 }
@@ -290,7 +296,6 @@ function renderInstagramPosts(posts) {
         `;
     }).join('');
 
-    // アニメーションを適用
     observeElements(document.querySelectorAll('.instagram-item'));
 }
 
@@ -304,12 +309,10 @@ function showInstagramSetupMessage() {
         </div>
     `;
 
-    // プレースホルダー画像を表示（デモ用）
     showInstagramPlaceholders();
 }
 
 function showInstagramPlaceholders() {
-    // デモ用のプレースホルダー画像を表示
     const placeholders = Array(CONFIG.instagram.postCount).fill(null).map((_, i) => `
         <div class="instagram-item fade-in">
             <img src="images/instagram-${i + 1}.jpg" alt="Instagram投稿 ${i + 1}" loading="lazy">
@@ -325,7 +328,6 @@ function showInstagramPlaceholders() {
 
     elements.instagramGrid.innerHTML = placeholders;
 
-    // アニメーションを適用
     observeElements(document.querySelectorAll('.instagram-item'));
 }
 
@@ -343,7 +345,6 @@ function initScrollAnimations() {
     const fadeElements = document.querySelectorAll('.fade-in');
     observeElements(fadeElements);
 
-    // セクションにfade-inクラスを追加
     document.querySelectorAll('.section-header, .about-content, .ink-frame, .contact-content').forEach(el => {
         el.classList.add('fade-in');
     });
@@ -371,10 +372,8 @@ function observeElements(elements) {
 // プレースホルダー画像生成
 // ============================================
 function initPlaceholderImages() {
-    // About画像のプレースホルダー
     createPlaceholderImage(elements.aboutImage, 600, 800, 'Photographer');
 
-    // ギャラリー画像のプレースホルダー
     document.querySelectorAll('.gallery-item img').forEach((img, i) => {
         const item = CONFIG.gallery[i];
         const width = item.wide ? 800 : 400;
@@ -382,14 +381,12 @@ function initPlaceholderImages() {
         createPlaceholderImage(img, width, height, item.title);
     });
 
-    // Instagram画像のプレースホルダー
     document.querySelectorAll('.instagram-item img').forEach((img, i) => {
         createPlaceholderImage(img, 400, 400, `IG ${i + 1}`);
     });
 }
 
 function createPlaceholderImage(imgElement, width, height, text) {
-    // 画像が既に読み込まれている場合はスキップ
     if (imgElement.complete && imgElement.naturalWidth > 0) {
         return;
     }
@@ -399,7 +396,6 @@ function createPlaceholderImage(imgElement, width, height, text) {
     canvas.height = height;
     const ctx = canvas.getContext('2d');
 
-    // グラデーション背景
     const gradient = ctx.createLinearGradient(0, 0, width, height);
     gradient.addColorStop(0, '#e8e8e8');
     gradient.addColorStop(0.5, '#d0d0d0');
@@ -407,7 +403,6 @@ function createPlaceholderImage(imgElement, width, height, text) {
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, width, height);
 
-    // 水墨画風のパターン
     ctx.globalAlpha = 0.1;
     for (let i = 0; i < 5; i++) {
         ctx.beginPath();
@@ -422,7 +417,6 @@ function createPlaceholderImage(imgElement, width, height, text) {
         ctx.fill();
     }
 
-    // テキスト
     ctx.globalAlpha = 0.3;
     ctx.fillStyle = '#333';
     ctx.font = `${Math.min(width, height) / 10}px "Cormorant Garamond", serif`;
