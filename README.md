@@ -1,46 +1,94 @@
 # Silence in Frame - 写真家ポートフォリオ
 
 写真のアップロード・管理機能付きポートフォリオサイトです。
-
-**公開URL（GitHub Pages）**: https://naojol.github.io/photographer-portfolio/
+GitHub Pages + Supabase で完全無料で運用できます。
 
 ---
 
-## GitHub Pages での写真追加方法
+## セットアップ手順
 
-1. `images/` フォルダに写真ファイル（JPG/PNG）を追加
-2. `script.js` の `CONFIG.gallery` に写真情報を追記
-3. GitHub にプッシュ → 自動で反映
+### 1. Supabase プロジェクトを作成
+
+1. [https://supabase.com](https://supabase.com) でアカウントを作成（GitHub ログイン可）
+2. 「New Project」をクリック
+3. プロジェクト名とデータベースパスワードを設定
+4. Region は「Northeast Asia (Tokyo)」を選択
+5. 「Create new project」をクリック
+
+### 2. データベースを設定
+
+Supabase ダッシュボードの **SQL Editor** で以下を実行:
+
+```sql
+CREATE TABLE albums (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  title TEXT NOT NULL,
+  description TEXT DEFAULT '',
+  cover_photo_id UUID,
+  sort_order INTEGER NOT NULL DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE TABLE photos (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  title TEXT NOT NULL DEFAULT '無題',
+  description TEXT DEFAULT '',
+  category TEXT DEFAULT 'Other',
+  storage_path TEXT NOT NULL,
+  public_url TEXT NOT NULL,
+  album_id UUID REFERENCES albums(id) ON DELETE SET NULL,
+  sort_order INTEGER NOT NULL DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE INDEX idx_photos_sort_order ON photos(sort_order);
+CREATE INDEX idx_photos_album_id ON photos(album_id);
+
+ALTER TABLE photos ENABLE ROW LEVEL SECURITY;
+ALTER TABLE albums ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Public read photos" ON photos FOR SELECT USING (true);
+CREATE POLICY "Public read albums" ON albums FOR SELECT USING (true);
+CREATE POLICY "Auth insert photos" ON photos FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+CREATE POLICY "Auth update photos" ON photos FOR UPDATE USING (auth.role() = 'authenticated');
+CREATE POLICY "Auth delete photos" ON photos FOR DELETE USING (auth.role() = 'authenticated');
+CREATE POLICY "Auth manage albums" ON albums FOR ALL USING (auth.role() = 'authenticated');
+```
+
+### 3. ストレージを設定
+
+```sql
+INSERT INTO storage.buckets (id, name, public) VALUES ('photos', 'photos', true);
+
+CREATE POLICY "Public read storage" ON storage.objects FOR SELECT USING (bucket_id = 'photos');
+CREATE POLICY "Auth upload storage" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'photos' AND auth.role() = 'authenticated');
+CREATE POLICY "Auth delete storage" ON storage.objects FOR DELETE USING (bucket_id = 'photos' AND auth.role() = 'authenticated');
+```
+
+### 4. 管理者アカウントを作成
+
+1. Authentication → Users → 「Add User」
+2. メールアドレスとパスワードを入力
+3. 「Auto Confirm User」にチェック
+
+### 5. API キーを設定
+
+Settings → API から Project URL と anon key をコピーし、`supabase-config.js` を編集:
 
 ```js
-// script.js の CONFIG.gallery に追記する例
-{
-    id: 6,
-    src: 'images/my-photo.jpg',
-    title: '作品タイトル',
-    category: 'Shrine',
-    description: '作品の説明文'
-}
+const SUPABASE_URL = 'https://xxxxx.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIs...';
 ```
+
+### 6. GitHub Pages にデプロイ
+
+Settings → Pages → Source: `main` / `/ (root)` → Save
 
 ---
 
-## ローカルでの開発（写真アップロード機能付き）
+## 使い方
 
-```bash
-npm install
-npm start
-```
-
-| ページ | URL |
-|--------|-----|
-| ポートフォリオ | http://localhost:3000 |
-| 管理画面（写真アップロード） | http://localhost:3000/admin.html |
-
-管理画面からドラッグ＆ドロップで写真をアップロードできます。
-
----
-
-## 対応ファイル形式
-
-JPEG / PNG / WebP / GIF（最大20MB）
+1. `admin.html` にアクセスしてログイン
+2. 写真をドラッグ＆ドロップ（複数選択可）
+3. タイトル・カテゴリ・説明を入力
+4. 「アップロード」をクリック → ポートフォリオに自動反映
