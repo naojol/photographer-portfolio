@@ -7,11 +7,14 @@
     <title>管理画面 | Silence in Frame</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Noto+Sans+JP:wght@200;300;400;500&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Noto+Sans+JP:wght@200;300;400;500&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="admin.css">
 </head>
 
 <body>
+    <!-- ログイン画面 -->
     <div class="login-screen" id="login-screen">
         <div class="login-overlay"></div>
         <div class="login-container">
@@ -22,18 +25,23 @@
                     <input type="email" id="login-email" placeholder="メールアドレス" required autocomplete="email">
                 </div>
                 <div class="login-field">
-                    <input type="password" id="login-password" placeholder="パスワード" required autocomplete="current-password">
+                    <input type="password" id="login-password" placeholder="パスワード" required
+                        autocomplete="current-password">
                 </div>
                 <p class="login-error" id="login-error"></p>
                 <button type="submit" class="login-button" id="login-button">
                     <span class="login-button-text">ログイン</span>
-                    <span class="login-button-loading" style="display:none"><span class="spinner"></span></span>
+                    <span class="login-button-loading" style="display:none">
+                        <span class="spinner"></span>
+                    </span>
                 </button>
             </form>
         </div>
     </div>
 
+    <!-- メイン管理画面（ログイン後に表示） -->
     <div class="app-screen" id="app-screen" style="display:none">
+        <!-- ヘッダー -->
         <header class="admin-header">
             <div class="header-container">
                 <div class="header-left">
@@ -47,13 +55,16 @@
             </div>
         </header>
 
+        <!-- メインコンテンツ -->
         <main class="admin-main">
+            <!-- アップロードセクション -->
             <section class="upload-section">
                 <h2 class="section-title">写真をアップロード</h2>
                 <form id="upload-form" class="upload-form">
                     <div class="upload-dropzone" id="dropzone">
                         <div class="dropzone-content" id="dropzone-content">
-                            <svg class="dropzone-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <svg class="dropzone-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor"
+                                stroke-width="1.5">
                                 <path d="M8 32l10-10 8 8 6-6 8 8" />
                                 <rect x="4" y="4" width="40" height="40" rx="4" />
                                 <circle cx="16" cy="16" r="4" />
@@ -63,9 +74,11 @@
                             <label class="dropzone-button" for="photo-input">ファイルを選択</label>
                             <p class="dropzone-hint">JPEG, PNG, WebP, GIF / 最大20MB / 複数選択可</p>
                         </div>
-                        <input type="file" id="photo-input" name="photos" accept="image/jpeg,image/png,image/webp,image/gif" multiple hidden>
+                        <input type="file" id="photo-input" name="photos"
+                            accept="image/jpeg,image/png,image/webp,image/gif" multiple hidden>
                     </div>
 
+                    <!-- 一括プレビュー -->
                     <div class="batch-preview" id="batch-preview" style="display:none">
                         <div class="batch-preview-header">
                             <span id="batch-count">0枚選択中</span>
@@ -93,12 +106,15 @@
                         </div>
                         <div class="form-group full-width">
                             <label for="photo-description">説明</label>
-                            <textarea id="photo-description" name="description" placeholder="作品の説明" rows="2"></textarea>
+                            <textarea id="photo-description" name="description" placeholder="作品の説明"
+                                rows="2"></textarea>
                         </div>
                     </div>
 
                     <div class="upload-progress" id="upload-progress" style="display:none">
-                        <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progress-fill"></div>
+                        </div>
                         <p class="progress-text" id="progress-text">アップロード中...</p>
                     </div>
 
@@ -108,23 +124,29 @@
                 </form>
             </section>
 
+            <!-- デフォルト写真移行 -->
             <div class="migrate-banner" id="migrate-banner" style="display:none">
                 <p>デフォルト写真（5枚）をSupabaseに移行して管理できます。</p>
                 <button class="migrate-button" id="migrate-button">デフォルト写真を移行</button>
             </div>
 
+            <!-- 写真一覧セクション -->
             <section class="photos-section">
                 <div class="section-header-row">
                     <h2 class="section-title">写真一覧</h2>
                     <span class="photo-count" id="photo-count">0枚</span>
                 </div>
                 <div class="photos-grid" id="photos-grid">
-                    <div class="photos-loading" id="photos-loading"><span class="spinner"></span><p>読み込み中...</p></div>
+                    <div class="photos-loading" id="photos-loading">
+                        <span class="spinner"></span>
+                        <p>読み込み中...</p>
+                    </div>
                 </div>
             </section>
         </main>
     </div>
 
+    <!-- 編集モーダル -->
     <div class="modal-overlay" id="edit-modal" style="display:none">
         <div class="modal-backdrop" data-close="edit"></div>
         <div class="modal-content">
@@ -132,11 +154,26 @@
             <form id="edit-form">
                 <input type="hidden" id="edit-id">
                 <div class="modal-image-preview" id="edit-image-preview"></div>
-                <div class="form-group"><label for="edit-title">タイトル</label><input type="text" id="edit-title" required></div>
-                <div class="form-group"><label for="edit-category">カテゴリ</label>
-                    <select id="edit-category"><option value="Shrine">Shrine</option><option value="Temple">Temple</option><option value="Sacred">Sacred</option><option value="Nature">Nature</option><option value="Portrait">Portrait</option><option value="Street">Street</option><option value="Other">Other</option></select>
+                <div class="form-group">
+                    <label for="edit-title">タイトル</label>
+                    <input type="text" id="edit-title" required>
                 </div>
-                <div class="form-group"><label for="edit-description">説明</label><textarea id="edit-description" rows="3"></textarea></div>
+                <div class="form-group">
+                    <label for="edit-category">カテゴリ</label>
+                    <select id="edit-category">
+                        <option value="Shrine">Shrine（神社）</option>
+                        <option value="Temple">Temple（寺院）</option>
+                        <option value="Sacred">Sacred（聖域）</option>
+                        <option value="Nature">Nature（自然）</option>
+                        <option value="Portrait">Portrait（ポートレート）</option>
+                        <option value="Street">Street（ストリート）</option>
+                        <option value="Other">Other（その他）</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="edit-description">説明</label>
+                    <textarea id="edit-description" rows="3"></textarea>
+                </div>
                 <div class="modal-actions">
                     <button type="button" class="btn-cancel" data-close="edit">キャンセル</button>
                     <button type="submit" class="btn-save">保存</button>
@@ -145,6 +182,7 @@
         </div>
     </div>
 
+    <!-- 削除確認モーダル -->
     <div class="modal-overlay" id="delete-modal" style="display:none">
         <div class="modal-backdrop" data-close="delete"></div>
         <div class="modal-content modal-confirm">
@@ -160,6 +198,7 @@
         </div>
     </div>
 
+    <!-- トースト通知 -->
     <div class="toast-container" id="toast-container"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
